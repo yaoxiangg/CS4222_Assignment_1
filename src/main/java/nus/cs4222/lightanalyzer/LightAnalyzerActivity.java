@@ -122,9 +122,6 @@ public class LightAnalyzerActivity
     private void startLightSampling() {
 
         try {
-            lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
-
             // Check the flag
             if ( isLightSamplingOn )
                 return;
@@ -144,9 +141,9 @@ public class LightAnalyzerActivity
             numLightReadings = 0;
 
             // Start light sensor sampling (at normal sampling rate)
-            sensorManager.registerListener( this , 
-                                            lightSensor , 
-                                            SensorManager.SENSOR_DELAY_NORMAL );
+            sensorManager.registerListener(this,
+                    lightSensor,
+                    SensorManager.SENSOR_DELAY_NORMAL);
 
             // Set the flag
             isLightSamplingOn = true;
@@ -170,8 +167,6 @@ public class LightAnalyzerActivity
 
             // Set the flag
             isLightSamplingOn = false;
-            lm.removeUpdates(this);
-            lm=null;
 
             // Stop light sensor sampling
             sensorManager.unregisterListener( this ,
@@ -207,6 +202,17 @@ public class LightAnalyzerActivity
         // Get the ambient light level in lux
         float lux = event.values[0];
 
+        // Turn GPS on base on lux threshold
+        int LIGHT_THRESHOLD = 600;
+        if (lux > LIGHT_THRESHOLD) {
+            lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
+            lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
+        } else {
+            if (lm != null) {
+                lm.removeUpdates(this);
+            }
+            lm=null;
+        }
         // Log the reading
         logLightReading(timestamp, lux);
 
@@ -402,6 +408,4 @@ public class LightAnalyzerActivity
     private LocationManager lm;
 
     private TextView locationTextView;
-    private double latitude;
-    private double longitude;
 }
