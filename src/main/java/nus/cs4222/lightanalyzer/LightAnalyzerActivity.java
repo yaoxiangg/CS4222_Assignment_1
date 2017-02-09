@@ -53,6 +53,7 @@ public class LightAnalyzerActivity
         handler.post(new Runnable() {
             @Override
             public void run() {
+                placeTextView.setText("<< Outdoor >>");
                 locationTextView.setText(sb.toString());
             }
         });
@@ -207,11 +208,13 @@ public class LightAnalyzerActivity
         if (lux > LIGHT_THRESHOLD) {
             lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
+            placeTextView.setText("<< Outdoor >>");
         } else {
             if (lm != null) {
                 lm.removeUpdates(this);
             }
             lm=null;
+            placeTextView.setText("<< Indoor >>");
         }
         // Log the reading
         logLightReading(timestamp, lux);
@@ -244,6 +247,8 @@ public class LightAnalyzerActivity
             (TextView) findViewById( R.id.PA1Activity_TextView_Light );
         locationTextView =
             (TextView) findViewById( R.id.PA1Activity_TextView_Location );
+        placeTextView =
+            (TextView) findViewById( R.id.PA1Activity_TextView_Place );
         // Disable the stop button
         stopLightButton.setEnabled(false);
 
@@ -252,17 +257,17 @@ public class LightAnalyzerActivity
     }
 
     private int promptGPS() {
-        int off = 0;
+        int state = 0;
         try {
-            off = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
+            state = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
         } catch (Settings.SettingNotFoundException e) {
             e.printStackTrace();
         }
-        if (off==0){
+        if (state == 0){
             Intent onGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
             startActivity(onGPS);
         }
-        return off;
+        return state;
     }
 
     @Override
@@ -433,9 +438,9 @@ public class LightAnalyzerActivity
     /** DDMS Log Tag. */
     private static final String TAG = "LightAnalyzerActivity";
 
+    //GPS
     private LocationManager lm;
-
     private TextView locationTextView;
-
+    private TextView placeTextView;
     private int GPS_STATE;
 }

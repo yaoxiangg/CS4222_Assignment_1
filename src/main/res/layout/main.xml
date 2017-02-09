@@ -36,7 +36,15 @@
         android:textAppearance="?android:attr/textAppearanceLarge"
         android:text="" />
 
-    <!-- Light sensor Readings -->
+    <!-- GPS sensor Readings -->
+    <TextView
+      android:id="@+id/PA1Activity_TextView_Place"
+      android:layout_width="fill_parent"
+      android:layout_height="wrap_content"
+      android:textAppearance="?android:attr/textAppearanceLarge"
+      android:text="" />
+
+    <!-- GPS sensor Readings -->
     <TextView
       android:id="@+id/PA1Activity_TextView_Location"
       android:layout_width="fill_parent"
