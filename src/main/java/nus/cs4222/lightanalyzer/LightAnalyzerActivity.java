@@ -45,7 +45,7 @@ public class LightAnalyzerActivity
         Log.e("GPS", "location changed: lat=" + lat + ", lon=" + lon);
         // Light sensor reading details
         final StringBuilder sb = new StringBuilder();
-        sb.append( "\nLocation--" );
+        sb.append( "\nLocation --" );
         sb.append( "\nLatitude: " + lat );
         sb.append( "\nLongitude: " + lon );
 
@@ -245,10 +245,32 @@ public class LightAnalyzerActivity
         locationTextView =
             (TextView) findViewById( R.id.PA1Activity_TextView_Location );
         // Disable the stop button
-        stopLightButton.setEnabled( false );
+        stopLightButton.setEnabled(false);
 
         // Set up button listeners
         setUpButtonListeners();
+    }
+
+    private int promptGPS() {
+        int off = 0;
+        try {
+            off = Settings.Secure.getInt(getContentResolver(), Settings.Secure.LOCATION_MODE);
+        } catch (Settings.SettingNotFoundException e) {
+            e.printStackTrace();
+        }
+        if (off==0){
+            Intent onGPS = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
+            startActivity(onGPS);
+        }
+        return off;
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (GPS_STATE == 0) {
+            GPS_STATE = promptGPS();
+        }
     }
 
     /** Helper method that sets up button listeners. */
@@ -257,8 +279,14 @@ public class LightAnalyzerActivity
         // Start light sampling
         startLightButton.setOnClickListener( new View.OnClickListener() {
                 public void onClick ( View v ) {
+                    //StartGPS
+                    GPS_STATE = promptGPS();
+                    if (GPS_STATE == 0) {
+                        return;
+                    }
                     // Start light sampling
                     startLightSampling();
+
                     // Disable the start button and enable the stop button
                     startLightButton.setEnabled( false );
                     stopLightButton.setEnabled(true);
@@ -408,4 +436,6 @@ public class LightAnalyzerActivity
     private LocationManager lm;
 
     private TextView locationTextView;
+
+    private int GPS_STATE;
 }
