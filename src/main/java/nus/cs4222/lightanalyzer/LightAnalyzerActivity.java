@@ -204,7 +204,7 @@ public class LightAnalyzerActivity
         float lux = event.values[0];
 
         // Turn GPS on base on lux threshold
-        int LIGHT_THRESHOLD = 600;
+        int LIGHT_THRESHOLD = 800;
         if (lux > LIGHT_THRESHOLD) {
             lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
             lm.requestLocationUpdates(LocationManager.GPS_PROVIDER, 500, 0, this);
