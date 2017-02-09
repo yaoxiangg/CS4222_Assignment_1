@@ -324,7 +324,7 @@ public class LightAnalyzerActivity
         final StringBuilder sb = new StringBuilder();
         sb.append( "\nLight--" );
         sb.append( "\nNumber of readings: " + numLightReadings );
-        sb.append( "\nAmbient light level (lux): " + lux );
+        sb.append( "\nAmbient light level (lux): " + lux + "\n");
 
         // Update the text view in the main UI thread
         handler.post ( new Runnable() {
